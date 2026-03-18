@@ -1,4 +1,4 @@
-package com.shopflow.user_service.payload;
+package com.shopflow.user_service.dto;
 
 import com.shopflow.user_service.entity.User;
 import lombok.Builder;

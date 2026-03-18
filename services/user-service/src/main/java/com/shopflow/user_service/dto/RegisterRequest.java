@@ -1,12 +1,12 @@
-package com.shopflow.user_service.payload;
+package com.shopflow.user_service.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public record LoginRequest(
+public record RegisterRequest(
     @NotBlank @Email String email,
 
-    @NotBlank String password
+    @NotBlank @Size(min = 8, message = "Password must be atleast 8 characters") String password
 ) {
 }

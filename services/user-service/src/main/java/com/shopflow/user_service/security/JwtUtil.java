@@ -1,4 +1,4 @@
-package com.shopflow.user_service.util;
+package com.shopflow.user_service.security;
 
 import com.shopflow.user_service.entity.User;
 import io.jsonwebtoken.Claims;

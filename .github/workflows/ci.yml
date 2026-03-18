@@ -1,0 +1,29 @@
+# name: CI
+
+# on:
+#   push:
+#     branches: [develop, main, 'release/**']
+#   pull_request:
+#     branches: [develop, main, 'release/**']
+
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         service: [user-service, product-service]
+#     name: test (${{ matrix.service }})
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - uses: actions/setup-java@v4
+#         with:
+#           java-version: '21'
+#           distribution: 'temurin'
+#           cache: maven
+
+#       - name: Run tests
+#         run: mvn test -pl services/${{ matrix.service }} --no-transfer-progress
+
+#       - name: Check coverage (fail if < 70%)
+#         run: mvn verify -pl services/${{ matrix.service }} -Pjacoco --no-transfer-progress

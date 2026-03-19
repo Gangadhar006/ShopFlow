@@ -1,0 +1,121 @@
+version: '3.9'
+services:
+    postgres:
+        image: postgres:15-alpine
+        container_name: shopflow-postgres
+        environment:
+            POSTGRES_USER: ${DB_USERNAME:-shopflow}
+            POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+            POSTGRES_DB: shopflow_users
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+            - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U shopflow"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        networks:
+            - shopflow-net
+
+    mongodb:
+        image: mongo:7
+        container_name: shopflow-mongodb
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME:-shopflow}
+            MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-secret}
+        ports:
+            - "27017:27017"
+        volumes:
+            - mongo_data:/data/db
+        healthcheck:
+            test: ["CMD","mongosh","--eval","db.adminCommand('ping')"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        networks:
+            - shopflow-net
+
+    redis:
+        image: redis:7-alpine
+        container_name: shopflow-redis
+        command: redis-server --requirepass ${REDIS_PASSWORD:-secret}
+        ports:
+            - "6379:6379"
+        healthcheck:
+            test: ["CMD","redis-cli","ping"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        networks:
+            - shopflow-net
+
+    kafka:
+        image: confluentinc/cp-kafka:7.5.0
+        container_name: shopflow-kafka
+        ports:
+            - "9092:9092"
+        environment:
+            # KRaft settings — no Zookeeper needed
+            KAFKA_NODE_ID: 1
+            KAFKA_PROCESS_ROLES: broker,controller
+            KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+            KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+
+            # Listeners
+            KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+            KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+            KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+
+            # Cluster identity — generate once with: kafka-storage random-uuid
+            CLUSTER_ID: ${KAFKA_CLUSTER_ID:-MkU3OEVBNTcwNTJENDM2Qk}
+
+            # Topic defaults
+            KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+            KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+            KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+            KAFKA_AUTO_CREATE_TOPICS_ENABLE: false
+
+            # Storage
+            KAFKA_LOG_DIRS: /var/lib/kafka/data
+        volumes:
+            - kafka_data:/var/lib/kafka/data
+        healthcheck:
+            test: ["CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list"]
+            interval: 15s
+            timeout: 10s
+            retries: 10
+        networks:
+            - shopflow-net
+
+    elasticsearch:
+        image: elasticsearch:8.11.0
+        container_name: shopflow-elasticsearch
+        environment:
+            - discovery.type=single-node
+            - xpack.security.enabled=false
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        ports:
+            - "9200:9200"
+        volumes:
+            - es_data:/usr/share/elasticsearch/data
+        healthcheck:
+            test: ["CMD-SHELL","curl -s http://localhost:9200/_cluster/health | grep -q 'yellow\\|green'"]
+            interval: 15s
+            timeout: 10s
+            retries: 10
+        networks:
+            - shopflow-net
+
+volumes:
+    postgres_data:
+    mongo_data:
+    kafka_data:
+    es_data:
+
+networks:
+    shopflow-net:
+        driver: bridge

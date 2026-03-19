@@ -1,6 +1,6 @@
-package com.shopflow.user_service.controllers;
+package com.shopflow.user_service.controller;
 
-import com.shopflow.user_service.payload.UserDto;
+import com.shopflow.user_service.dto.UserDto;
 import com.shopflow.user_service.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

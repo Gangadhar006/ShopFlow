@@ -2,11 +2,11 @@ package com.shopflow.user_service.service;
 
 import com.shopflow.user_service.entity.User;
 import com.shopflow.user_service.exception.UserAlreadyExistsException;
-import com.shopflow.user_service.payload.AuthResponse;
-import com.shopflow.user_service.payload.LoginRequest;
-import com.shopflow.user_service.payload.RegisterRequest;
+import com.shopflow.user_service.dto.AuthResponse;
+import com.shopflow.user_service.dto.LoginRequest;
+import com.shopflow.user_service.dto.RegisterRequest;
 import com.shopflow.user_service.repository.UserRepository;
-import com.shopflow.user_service.util.JwtUtil;
+import com.shopflow.user_service.security.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -1,6 +1,6 @@
 package com.shopflow.user_service.filter;
 
-import com.shopflow.user_service.util.JwtUtil;
+import com.shopflow.user_service.security.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

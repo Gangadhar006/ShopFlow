@@ -1,8 +1,8 @@
-package com.shopflow.user_service.controllers;
+package com.shopflow.user_service.controller;
 
-import com.shopflow.user_service.payload.AuthResponse;
-import com.shopflow.user_service.payload.LoginRequest;
-import com.shopflow.user_service.payload.RegisterRequest;
+import com.shopflow.user_service.dto.AuthResponse;
+import com.shopflow.user_service.dto.LoginRequest;
+import com.shopflow.user_service.dto.RegisterRequest;
 import com.shopflow.user_service.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

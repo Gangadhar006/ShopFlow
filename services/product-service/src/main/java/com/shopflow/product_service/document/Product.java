@@ -44,6 +44,7 @@ public class Product {
     @Indexed
     private String category;
 
+    @Builder.Default
     private List<String> images = new ArrayList<>();
 
     @CreatedDate

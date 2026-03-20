@@ -1,0 +1,86 @@
+# All Kafka topics for ShopFlow
+# Format: name | partitions | retention | producer | consumers
+
+topics:
+    -   name: order.created
+        partitions: 3
+        retention: 7d
+        partition_key: orderId
+        producer: order-service
+        consumers: [ inventory-service ]
+
+    -   name: order.cancelled
+        partitions: 3
+        retention: 7d
+        partition_key: orderId
+        producer: order-service
+        consumers: [ inventory-service ]
+
+    -   name: payment.initiated
+        partitions: 3
+        retention: 7d
+        partition_key: orderId
+        producer: order-service
+        consumers: [ payment-service ]
+
+    -   name: payment.processed
+        partitions: 3
+        retention: 7d
+        partition_key: orderId
+        producer: payment-service
+        consumers: [ order-service, notification-service ]
+
+    -   name: payment.failed
+        partitions: 3
+        retention: 7d
+        partition_key: orderId
+        producer: payment-service
+        consumers: [ order-service, inventory-service, notification-service ]
+
+    -   name: inventory.reserved
+        partitions: 3
+        retention: 7d
+        partition_key: orderId
+        producer: inventory-service
+        consumers: [ payment-service ]
+
+    -   name: inventory.released
+        partitions: 3
+        retention: 7d
+        partition_key: orderId
+        producer: inventory-service
+        consumers: [ order-service ]
+
+    -   name: inventory.updated
+        partitions: 3
+        retention: 7d
+        partition_key: productId
+        producer: inventory-service
+        consumers: [ search-service ]
+
+    -   name: notification.send
+        partitions: 3
+        retention: 3d
+        partition_key: userId
+        producer: order-service, payment-service
+        consumers: [ notification-service ]
+
+    -   name: order.dlq
+        partitions: 1
+        retention: 30d
+        producer: order-service
+        consumers: [ manual-review ]
+
+    -   name: inventory.dlq
+        partitions: 1
+        retention: 30d
+        producer: inventory-service
+        consumers: [ manual-review ]
+
+    -   name: payment.dlq
+        partitions: 1
+        retention: 30d
+        producer: payment-service
+        consumers: [ manual-review ]
+
+### Create shared Kafka config module
